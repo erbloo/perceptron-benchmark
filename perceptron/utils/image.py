@@ -212,7 +212,7 @@ def ndarray_to_bytes(image):
 
 
 def letterbox_image(
-        shape=(416, 416), data_format='channels_last', fname='example.png'):
+        shape=(416, 416), data_format='channels_last', fname='example.png', absolute_path=False):
     """Returns a letterbox image of target fname.
 
     Parameters
@@ -230,7 +230,10 @@ def letterbox_image(
     """
     assert len(shape) == 2
     assert data_format in ['channels_first', 'channels_last']
-    path = os.path.join(os.path.dirname(__file__), 'images/%s' % fname)
+    if absolute_path:
+        path = fname
+    else:
+        path = os.path.join(os.path.dirname(__file__), 'images/%s' % fname)
     image = Image.open(path)
     iw, ih = image.size
     h, w = shape
