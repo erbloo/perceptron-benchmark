@@ -45,6 +45,40 @@ class TargetClassMiss(Criterion):
         return self._target_class not in predictions['classes']
 
 
+class TargetClassNumberChange(Criterion):
+    """ Defines adversarials as images for which the number of target class bbox is not
+    the same in the detection result.
+    """
+
+    def __init__(self, target_class):
+        super(TargetClassNumberChange, self).__init__()
+        self._target_class = target_class
+        self._init_num = None
+
+    def target_class(self):
+        """Return target class."""
+        return self._target_class
+
+    def name(self):
+        """Return ctiterion name."""
+        return 'TargetClassNumberChange'
+
+    def is_adversarial(self, predictions, annotation):
+        """Decides if predictions for an image are adversarial."""
+        if self._init_num is None:
+            if self._target_class == -1:
+                self._init_num = len(predictions['classes'])
+            else:
+                self._init_num = len([i for i, x in enumerate(predictions['classes']) if x == self._target_class])
+            return False
+        else:
+            if self._target_class == -1:
+                pd = len(predictions['classes'])
+            else:
+                pd = len([i for i, x in enumerate(predictions['classes']) if x == self._target_class])
+            return pd != self._init_num
+
+
 class RegionalTargetClassMiss(Criterion):
     """Defines adversarials as images for which the target class in target region is not
     in the detection result.

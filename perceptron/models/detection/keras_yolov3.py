@@ -19,7 +19,9 @@ import numpy as np
 import logging
 import os
 from perceptron.models.base import DifferentiableModel
-from perceptron.utils.criteria.detection import TargetClassMiss, RegionalTargetClassMiss
+from perceptron.utils.criteria.detection import TargetClassMiss
+from perceptron.utils.criteria.detection import RegionalTargetClassMiss
+from perceptron.utils.criteria.detection import TargetClassNumberChange
 from keras import backend as K
 import keras
 
@@ -220,7 +222,8 @@ class KerasYOLOv3Model(DifferentiableModel):
         px, dpdx = self._process_input(image)
 
         if isinstance(criterion, TargetClassMiss) or \
-                isinstance(criterion, RegionalTargetClassMiss):
+                isinstance(criterion, RegionalTargetClassMiss) or \
+                    isinstance(criterion, TargetClassNumberChange):
             boxes, scores, classes, loss, gradient =\
                 self._tgt_cls_pred_and_grad_fn(
                     [px[np.newaxis], criterion.target_class()])
