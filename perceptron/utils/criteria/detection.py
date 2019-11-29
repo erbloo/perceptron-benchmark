@@ -22,6 +22,8 @@ from perceptron.utils.func import softmax
 from .base import Criterion
 import numpy as np
 
+import pdb
+
 
 class TargetClassMiss(Criterion):
     """ Defines adversarials as images for which the target class is not
@@ -53,7 +55,6 @@ class TargetClassNumberChange(Criterion):
     def __init__(self, target_class):
         super(TargetClassNumberChange, self).__init__()
         self._target_class = target_class
-        self._init_num = None
 
     def target_class(self):
         """Return target class."""
@@ -65,18 +66,15 @@ class TargetClassNumberChange(Criterion):
 
     def is_adversarial(self, predictions, annotation):
         """Decides if predictions for an image are adversarial."""
-        if self._init_num is None:
-            if self._target_class == -1:
-                self._init_num = len(predictions['classes'])
-            else:
-                self._init_num = len([i for i, x in enumerate(predictions['classes']) if x == self._target_class])
+        if annotation is None:
             return False
+        if self._target_class == -1:
+            pd = len(predictions['classes'])
+            gt = len(annotation['classes'])
         else:
-            if self._target_class == -1:
-                pd = len(predictions['classes'])
-            else:
-                pd = len([i for i, x in enumerate(predictions['classes']) if x == self._target_class])
-            return pd != self._init_num
+            pd = len([i for i, x in enumerate(predictions['classes']) if x == self._target_class])
+            gt = len([i for i, x in enumerate(annotation['classes']) if x == self._target_class])
+        return pd != gt
 
 
 class RegionalTargetClassMiss(Criterion):

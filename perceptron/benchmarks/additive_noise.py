@@ -22,6 +22,8 @@ from .base import Metric
 from .base import call_decorator
 from perceptron.utils.rngs import nprng
 
+import pdb
+
 
 class AdditiveNoiseMetric(Metric):
     """Base class for metric that tests models against additive noise."""
@@ -55,13 +57,13 @@ class AdditiveNoiseMetric(Metric):
         """
 
         a = adv
-        del adv
-        del annotation
-        del unpack
-
         image = a.original_image
         bounds = a.bounds()
         min_, max_ = bounds
+        
+        # if a.original_pred is None and self._default_model.model_task() == 'det':
+        #     ori_pred, _ = a.predictions(image)
+        #     a.set_original_pred(ori_pred)
 
         if not isinstance(epsilons, Iterable):
             epsilons = np.linspace(0, 1, num=epsilons + 1)[1:]

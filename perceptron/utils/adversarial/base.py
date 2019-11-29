@@ -151,6 +151,10 @@ class Adversarial(ABC):
         """The original label."""
         return self._original_pred
 
+    def set_original_pred(self, pred):
+        """Set original prediction"""
+        self._original_pred = pred
+
     def set_distance_dtype(self, dtype):
         """Set the dtype of Distance."""
         assert dtype >= self._original_image.dtype
